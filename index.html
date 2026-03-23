@@ -133,10 +133,16 @@ Max : <input type="number" id="maxInput" min="2" max="10" value="6">
 </div>
 <br><br>
 
-<label>
-<input type="checkbox" id="randomMode" onchange="toggleRefresh()">
-🎯
-</label>
+<div style="margin-top:10px;">
+    <label>
+        <input type="checkbox" id="randomMode" onchange="toggleRefresh()">
+        🎯
+    </label>
+
+    <label style="margin-left:20px;">
+        <input type="checkbox" id="soundMode">
+        🔊 Écouter
+    </label>
 </div>
 
 <div id="cardsContainer"></div>
@@ -197,6 +203,12 @@ function revealCard(card, n) {
     if (randomMode.checked) {
         card.classList.add(n === targetIndex ? "correct" : "wrong");
     }
+
+    // 🔊 lecture du son si activé
+if (document.getElementById("soundMode").checked) {
+    playSound(n);
+    }
+    
 }
 
 /* 🎲 DÉS */
@@ -242,6 +254,11 @@ function getDice(n) {
 /* ✋ Images */
 function getFingers(n) {
     return `<img class="hand" src="images/${n}.png" alt="${n} doigts">`;
+}
+
+function playSound(n) {
+    const audio = new Audio(`audio/${n}.mp3`);
+    audio.play();
 }
 
 function changeTarget() {
