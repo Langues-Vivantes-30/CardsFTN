@@ -209,6 +209,11 @@ img.hand {
         <input type="checkbox" id="soundMode">
         🔊 
     </label>
+
+    <label style="margin-left:20px;">
+        <input type="checkbox" id="reverseMode" onchange="generateCards()">
+        🔁 trois à l'envers
+    </label>
 </div>
 
 <div id="cardsContainer"></div>
@@ -222,6 +227,10 @@ function getMode() {
 }
 
 function toggleRefresh() {
+    if (document.getElementById("reverseMode").checked) {
+        refreshBtn.style.display = "none";
+        return;
+    }
     refreshBtn.style.display = randomMode.checked ? "inline" : "none";
 }
 
@@ -232,6 +241,37 @@ function generateCards() {
     currentMax = max;
     cardsContainer.innerHTML = "";
 
+    // 🔁 MODE "3 À L'ENVERS"
+    if (document.getElementById("reverseMode").checked) {
+
+        // ❌ désactive la cible
+        targetIndex = null;
+        refreshBtn.style.display = "none";
+
+        let start = max - 3;
+
+        const colors = ["red", "green", "blue"];
+
+        for (let i = 0; i < 3; i++) {
+            let value = start + i;
+
+            let c = document.createElement("div");
+            c.className = "card";
+            c.style.background = colors[i];
+            c.dataset.value = value;
+
+            c.onclick = () => revealCard(c, value);
+
+            cardsContainer.appendChild(c);
+        }
+
+        // 👉 affichage du max à droite
+        cardsContainer.appendChild(createLabel(max));
+
+        return;
+    }
+
+    // 🔥 MODE NORMAL (inchangé)
     cardsContainer.appendChild(createLabel(0));
 
     for (let i = 1; i < max; i++) {
@@ -266,9 +306,9 @@ function revealCard(card, n) {
     if (getMode() === "dice") card.innerHTML = getDice(n);
     if (getMode() === "fingers") card.innerHTML = getFingers(n);
 
-    if (randomMode.checked) {
-        card.classList.add(n === targetIndex ? "correct" : "wrong");
-    }
+    if (randomMode.checked && !document.getElementById("reverseMode").checked) {
+    card.classList.add(n === targetIndex ? "correct" : "wrong");
+}
 
     // 🔊 lecture du son si activé
 if (document.getElementById("soundMode").checked) {
